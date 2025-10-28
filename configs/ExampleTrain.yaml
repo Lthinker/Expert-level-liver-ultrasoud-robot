@@ -1,0 +1,173 @@
+_target_: diffusion_policy.workspace.train_diffusion_unet_hybrid_workspace_notest.TrainDiffusionUnetHybridWorkspace
+checkpoint:
+  save_last_ckpt: true
+  save_last_snapshot: false
+  topk:
+    format_str: epoch={epoch:04d}-test_mean_score={val_loss:.3f}.ckpt 
+    k: 5
+    mode: min 
+    monitor_key: val_loss 
+wandb:
+  mode: "offline"
+dataloader:
+  batch_size: 24
+  num_workers: 16
+  persistent_workers: false
+  pin_memory: true
+  shuffle: true
+dataset_obs_steps: 5
+ema:
+  _target_: diffusion_policy.model.diffusion.ema_model.EMAModel
+  inv_gamma: 1.0
+  max_value: 0.9999
+  min_value: 0.0
+  power: 0.75
+  update_after_step: 0
+exp_name: default
+horizon: 16
+keypoint_visible_rate: 1.0
+logging:
+  group: null
+  id: null
+  mode: online
+  name: 240815-20.20.06_train_diffusion_unet_hybrid_US_image
+  project: diffusion_policy_debug
+  resume: true
+  tags:
+  - train_diffusion_unet_hybrid
+  - US_image
+  - default
+multi_run:
+  run_dir: ../data/outputs/240815/20.20.06_train_diffusion_unet_hybrid_US_image
+  wandb_name_base: 240815_ratio20_train_diffusion_unet_hybrid_US_image
+n_action_steps: 8
+n_latency_steps: 0
+n_obs_steps: 5
+name: train_diffusion_unet_hybrid
+obs_as_global_cond: true
+optimizer:
+  _target_: torch.optim.AdamW
+  betas:
+  - 0.95
+  - 0.999
+  eps: 1.0e-08
+  lr: 0.0001
+  weight_decay: 1.0e-06
+past_action_visible: true
+policy:
+  _target_: diffusion_policy.policy.diffusion_zh.DiffusionUnetHybridImagePolicyForceContinousActionHistory
+  cond_predict_scale: true
+  crop_shape: 
+  - 396
+  - 396
+  diffusion_step_embed_dim: 128
+  down_dims:
+  - 512
+  - 1024
+  - 2048
+  eval_fixed_crop: true
+  horizon: 16
+  kernel_size: 5
+  n_action_steps: 8
+  n_groups: 8
+  n_obs_steps: 5
+  noise_scheduler:
+    _target_: diffusers.schedulers.scheduling_ddpm.DDPMScheduler
+    beta_end: 0.02
+    beta_schedule: squaredcos_cap_v2
+    beta_start: 0.0001
+    clip_sample: true
+    num_train_timesteps: 20
+    prediction_type: epsilon
+    variance_type: fixed_small
+  num_inference_steps: 20
+  obs_as_global_cond: true
+  obs_encoder_group_norm: true
+  shape_meta:
+    action:
+      shape:
+      - 12
+    obs:
+      image:
+        shape:
+        - 3
+        - 400
+        - 400
+        type: rgb
+  position_img_fusion:
+    class_path: diffusion_policy.zhutils.PosiImgFusion.AttnFusionKANForce
+    input_dim: 64
+    hidden_dim: 64
+    output_dim: 64
+task:
+  dataset:
+    _target_: diffusion_policy.dataset.USSimple_image_dataset.USSimpleImageDatasetDomainRam3
+    horizon: 16
+    max_train_episodes: 3000
+    pad_after: 7
+    pad_before: 1
+    seed: 42
+    val_ratio: 0.2
+    zarr_path: "/Data5/yxs/lzh/diffusion_policy_inputs/250322HSKEPart/HSKEData/merged/Main_actionstate_uint8_euler_4aug.zarr/" # "/Data3/lzhdata3/diffusion_policy_general/diffusion_policy_inputs/250322HSKE/HSKEData/Main/yxs/actionstate_uint8_euler_4aug.zarr" # "/Data3/lzhdata3/diffusion_policy_general/diffusion_policy_inputs/250322HSKE/HSKEData/merged/Main_actionstate_uint8_euler_4aug.zarr/"
+    DomainRamPath: "./DomainRam/DomainRam3Plus.py"
+    use_domain_randomization: True
+    mask_path: "./DomainRam/default_convex_mask.npz"
+  env_runner:
+    _target_: diffusion_policy.env_runner.USSimple_image_runner.USSimpleImageRunner
+    fps: 10
+    legacy_test: true
+    max_steps: 300
+    n_action_steps: 8
+    n_envs: null
+    n_obs_steps: 5
+    n_test: 0
+    n_test_vis: 4
+    n_train: 6
+    n_train_vis: 2
+    past_action: false
+    test_start_seed: 100000
+    train_start_seed: 0
+  image_shape:
+  - 3
+  - 400
+  - 400
+  name: ExampleTrain
+  shape_meta:
+    action:
+      shape:
+      - 12
+    obs:
+      # agent_pos:
+      #   shape:
+      #   - 2
+      #   type: low_dim
+      image:
+        shape:
+        - 3
+        - 400
+        - 400
+        type: rgb
+task_name: ExampleTrain
+training:
+  checkpoint_every: 5
+  debug: false
+  device: cuda:6
+  gradient_accumulate_every: 1
+  lr_scheduler: cosine
+  lr_warmup_steps: 500
+  max_train_steps: null
+  max_val_steps: null
+  num_epochs: 200
+  resume: true
+  rollout_every: 50
+  sample_every: 5
+  seed: 42
+  tqdm_interval_sec: 1.0
+  use_ema: true
+  val_every: 5
+val_dataloader:
+  batch_size: 24
+  num_workers: 8
+  persistent_workers: false
+  pin_memory: true
+  shuffle: false
