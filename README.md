@@ -3,6 +3,10 @@
 📋 The complete project details have been submitted through the manuscript review system. Full project documentation and comprehensive codebase will be released following manuscript acceptance.
 
 ---
+## Demo  
+Here we provide a demo that can be run without a physical robot in `CodeForReviewDemo.zip`. The extraction password of the file is the manuscript ID (format with "nBME-xx-xxxx") which could be found from the peer review manuscript.  
+
+The demo includes a detailed readme file with quick setup instructions to help you get started immediately.
 
 ## Core Components
 
