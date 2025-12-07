@@ -52,7 +52,9 @@ This work builds upon the following excellent open-source projects:
 We gratefully acknowledge these contributions as the solid foundation for this project.
 
 ## Appendix of the demo
+## Demo description
 
+This repository provides a demo for “Democratizing expert-level liver sonography through an autonomous lightweight ultrasound robot.” The demo showcases our algorithm, which takes historical images, poses, and forces as input and predicts the poses and forces to be executed. The demo can be run without a physical robot. To protect volunteer privacy, we use an abdominal phantom (Model 057A, CIRS, USA) as an example in this demo.
 ## Installation
 
 The code was implemented and tested on Ubuntu 20.04.6 LTS. There are two methods to set up the required environment:
