@@ -107,10 +107,21 @@ python run.py
 
 The `testdemoVis.ipynb` notebook provides visualization of both input and output data.
 Input images:
-  ![Input images](figs/input_image.png)
+<p align="center">
+  <img src="figs/input_image.png" alt="Input images">
+</p>
+
 Input forces and poses in robot space:
-  ![Input forces and poses in robot space](figs/input_poseforce.png)
+<p align="center">
+  <img src="figs/input_poseforce.png" alt="Input forces and poses in robot space">
+</p>
+
 Output forces and poses in harmonized space:
-  ![Output forces and poses in harmonized space](figs/output_predposeforce.png)
+<p align="center">
+  <img src="figs/output_predposeforce.png" alt="Output forces and poses in harmonized space">
+</p>
+
 Output forces and poses in robot space:
-  ![Output forces and poses in robot space](figs/output_robotposeforce.png)
+<p align="center">
+  <img src="figs/output_robotposeforce.png" alt="Output forces and poses in robot space">
+</p>
