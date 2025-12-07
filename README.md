@@ -106,6 +106,7 @@ python run.py
 ## Visualization
 
 The `testdemoVis.ipynb` notebook provides visualization of both input and output data.
+
 Input images:
 <p align="center">
   <img src="figs/input_image.png" alt="Input images">
