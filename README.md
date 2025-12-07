@@ -6,7 +6,7 @@
 ## Demo  
 Here we provide a demo that can be run without a physical robot in `CodeForReviewDemo.zip`. The extraction password of the file is the manuscript ID (format with "nBME-xx-xxxx") which could be found from the peer review manuscript.  
 
-The demo includes a detailed readme file with quick setup instructions to help you get started immediately.
+The demo includes a detailed readme file with quick setup instructions to help you get started immediately. We also include the readme file in the appendix for better visualization
 
 ## Core Components
 
@@ -51,3 +51,61 @@ This work builds upon the following excellent open-source projects:
 
 We gratefully acknowledge these contributions as the solid foundation for this project.
 
+## Appendix of the demo
+
+## Installation
+
+The code was implemented and tested on Ubuntu 20.04.6 LTS. There are two methods to set up the required environment:
+
+### Method 1: Using the Pre-packaged Environment (Recommended)
+
+1. Download the Python environment package:
+   ```
+   wget https://cloud.tsinghua.edu.cn/f/b5757711d5dd484ea5c8/?dl=1 -O robodiff.zip
+   ```
+
+2. Unzip the file and add the environment to Conda:
+
+
+### Method 2: Manual Installation
+
+1. Install packages listed in the environment file:
+   ```
+   conda env create -f robodiff_environment.yml
+   ```
+
+## Model Checkpoint
+
+Download the model checkpoint:
+```
+wget https://cloud.tsinghua.edu.cn/f/89b9ca900b134a4c9010/?dl=1 -O checkpoint/model.ckpt
+```
+
+Ensure the checkpoint is located at: `checkpoint/model.ckpt`
+
+## Usage
+
+Ensure your terminal's working directory contains `run.py`, then execute:
+
+```bash
+conda activate robodiff
+python run.py
+```
+
+### Input
+
+- `PreviousState.pkl`: Contains states of historical poses, forces, and images
+
+### Output
+
+- `Outputaction/PredAction.npy`: Force and pose estimations in harmonized space
+- `Outputaction/ExeAction.npy`: Force and pose conversions in robot space
+
+## Visualization
+
+The `testdemoVis.ipynb` notebook provides visualization of both input and output data:
+
+- Input images: ![Input images](figs/input_image.png)
+- Input forces and poses in robot space: ![Input forces and poses in robot space](https://github.com/Lthinker/Expert-level-liver-ultrasoud-robot/tree/main/figs/input_poseforce.png)
+- Output forces and poses in harmonized space: ![Output forces and poses in harmonized space](https://github.com/Lthinker/Expert-level-liver-ultrasoud-robot/tree/main/figs/output_predposeforce.png)
+- Output forces and poses in robot space: ![Output forces and poses in robot space](https://github.com/Lthinker/Expert-level-liver-ultrasoud-robot/tree/main/figs/output_robotposeforce.png)
