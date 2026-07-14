@@ -4,7 +4,7 @@
 
 ---
 ## Demo  
-Here we provide a demo that can be run without a physical robot in `CodeForReviewDemo.zip`. The extraction password of the file is the manuscript ID (format with "nBME-xx-xxxx") which could be found from the peer review manuscript.  
+Here we provide a demo that can be run without a physical robot in `CodeForReviewDemo.zip`. The file without extraction password has been submitted with the manuscript.
 
 The demo includes a detailed readme file with quick setup instructions to help you get started immediately. We also include the readme file in the appendix for better visualization
 
