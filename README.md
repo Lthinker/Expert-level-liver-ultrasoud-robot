@@ -1,4 +1,4 @@
-# Autonomous liver ultrasound robot
+# A lightweight portable ultrasound robot for autonomous liver sonography
 **Code for "A lightweight portable ultrasound robot for autonomous liver sonography"**
 📋 The complete project details have been submitted through the manuscript review system. Full project documentation and comprehensive codebase will be released following manuscript acceptance.
 
