@@ -21,6 +21,7 @@ import robotcontrol
 import time
 import importlib
 import math3d as m3d 
+from diffusion_policy.policy.diffusion_unet_hybrid_image_policy import DiffusionUnetHybridImagePolicy
 
 class DiffusionUnetHybridImagePolicyForceContinousActionHistory(DiffusionUnetHybridImagePolicy):
     def __init__(self, 

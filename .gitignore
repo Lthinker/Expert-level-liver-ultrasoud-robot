@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.demo-env/
+checkpoint/
+Outputaction/
+testoutput/
+robodiff.zip
+*.ckpt

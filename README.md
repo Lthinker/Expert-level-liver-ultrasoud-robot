@@ -1,128 +1,117 @@
 # A lightweight portable ultrasound robot for autonomous liver sonography
-**Code for "A lightweight portable ultrasound robot for autonomous liver sonography"**
-📋 The complete project details have been submitted through the manuscript review system. Full project documentation and comprehensive codebase will be released following manuscript acceptance.
 
----
-## Demo  
-Here we provide a demo that can be run without a physical robot in `CodeForReviewDemo.zip`. The file without extraction password has been submitted with the manuscript.
+This repository provides an offline demonstration of the algorithm described in
+“A lightweight portable ultrasound robot for autonomous liver sonography”.
+It uses recorded ultrasound images, poses and forces from an abdominal phantom
+(Model 057A, CIRS, USA) to predict a chunk of poses and forces. No physical robot
+or live acquisition system is required for this demonstration.
 
-The demo includes a detailed readme file with quick setup instructions to help you get started immediately. We also include the readme file in the appendix for better visualization
+The demo source and phantom input are included directly in this repository;
+no password-protected archive is required. Training configurations and online
+control files are provided as reference material. The workflow below covers
+single-step offline inference and visualization, not training or robot deployment.
 
-## Core Components
-
-### 🔥 Multimodal Fusion
-- **File**: `diffusion_policy/zhutils/PosiImgFusion.py`
-- **Key Method**: `AttnFusionKANForce.forward_Memory()`
-- **Description**: Implements attention-based fusion of image, probe pose and force modalities and selects the top-k most important key frames
-
-### 🎯 Pose Harmonization
-- **Files**: 
-  - `CodeForReview/diffusion_policy/policy/diffusion_zh.py`
-  - `CodeForReview/communicate/envonline3cleanHSKE_XYXbot.py`
-- **Key Methods**: 
-  - `DiffusionUnetHybridImagePolicyForceContinousActionHistory.rel2abs()`
-  - `USForceOnlineRead.cal_rel_pose()`
-- **Description**: Computes the harmonized poses relative to the pose at the decision time point for generalization across devices and more efficient task understanding
-
-### 🌟 Image Randomization
-- **File**: `CodeForReview/DomainRam/DomainRam3Plus.py`
-- **Key Class**: `FixedMaskConvexDomainRandomization`
-- **Description**: Applies ultrasound-specific domain randomization techniques for generalization across subjects
-
-### 🚀 Action Generation
-- **File**: `CodeForReview/diffusion_policy/policy/diffusion_zh.py`
-- **Key Method**: `DiffusionUnetHybridImagePolicyForceContinousActionHistory.predict_action_conduct()`
-- **Description**: Generates robot actions (6D pose and 6D force) using diffusion model 
-
----
-
-## Configuration
-
-### Training Configuration
-- **File**: `ExampleTrain.yaml`
-- **Description**: Reference configuration file containing training hyperparameters and model settings
-
-## Acknowledgments
-
-This work builds upon the following excellent open-source projects:
-
-- **Diffusion Policy**: [https://github.com/real-stanford/diffusion_policy](https://github.com/real-stanford/diffusion_policy) - Foundational framework for diffusion-based policy learning
-- **Efficient-KAN**: [https://github.com/Blealtan/efficient-kan](https://github.com/Blealtan/efficient-kan) - Efficient implementation of Kolmogorov-Arnold Networks
-
-We gratefully acknowledge these contributions as the solid foundation for this project.
-
-## Appendix of the demo
-## Demo description
-
-This repository provides a demo for “Democratizing expert-level liver sonography through an autonomous lightweight ultrasound robot.” The demo showcases our algorithm, which takes historical images, poses, and forces as input and predicts the poses and forces to be executed. The demo can be run without a physical robot. To protect volunteer privacy, we use an abdominal phantom (Model 057A, CIRS, USA) as an example in this demo.
 ## Installation
 
-The code was implemented and tested on Ubuntu 20.04.6 LTS. There are two methods to set up the required environment:
-
-### Method 1: Using the Pre-packaged Environment (Recommended)
-
-1. Download the Python environment package:
-   ```
-   wget https://cloud.tsinghua.edu.cn/f/b5757711d5dd484ea5c8/?dl=1 -O robodiff.zip
-   ```
-
-2. Unzip the file and add the environment to Conda:
-
-
-### Method 2: Manual Installation
-
-1. Install packages listed in the environment file:
-   ```
-   conda env create -f robodiff_environment.yml
-   ```
-
-## Model Checkpoint
-
-Download the model checkpoint:
-```
-wget https://cloud.tsinghua.edu.cn/f/89b9ca900b134a4c9010/?dl=1 -O checkpoint/model.ckpt
-```
-
-Ensure the checkpoint is located at: `checkpoint/model.ckpt`
-
-## Usage
-
-Ensure your terminal's working directory contains `run.py`, then execute:
+Use Linux with Conda and an NVIDIA GPU compatible with CUDA 11.6. The original
+software environment uses Python 3.9 and PyTorch 1.12.1 and was developed on
+Ubuntu 20.04.6 LTS. Allow space for the environment archive (about 6.3 GB), its
+extracted contents and the checkpoint (about 4.4 GB).
 
 ```bash
-conda activate robodiff
+git clone https://github.com/Lthinker/Expert-level-liver-ultrasoud-robot.git
+cd Expert-level-liver-ultrasoud-robot
+wget 'https://cloud.tsinghua.edu.cn/f/b5757711d5dd484ea5c8/?dl=1' -O robodiff.zip
+mkdir -p .demo-env
+unzip robodiff.zip -d .demo-env
+conda activate "$PWD/.demo-env/robodiff"
+python -m pip install -r requirements-demo.txt
+python -c "import sys, torch; print(sys.executable); print(torch.__version__); print(torch.cuda.is_available())"
+```
+
+The archive contains a top-level `robodiff/` directory. Confirm that the printed
+Python path is inside `.demo-env/robodiff` and CUDA availability is `True`.
+Use `python -m ...` to launch Python tools from this extracted environment.
+The full original dependency inventory is provided in `robodiff_environment.yml`
+for reference; the packaged environment is the supported setup for this demo.
+
+## Model checkpoint
+
+From the repository root:
+
+```bash
+mkdir -p checkpoint
+wget 'https://cloud.tsinghua.edu.cn/f/89b9ca900b134a4c9010/?dl=1' -O checkpoint/model.ckpt
+```
+
+The checkpoint is distributed separately because of its size. Keep its filename
+and location as `checkpoint/model.ckpt`.
+
+## Run the demo
+
+With the environment activated:
+
+```bash
 python run.py
 ```
 
-### Input
+The launcher creates the output directories and runs one offline prediction.
+To select another visible GPU, use `python run.py --device cuda:1`.
+The first run can take longer while loading the checkpoint and initializing CUDA.
 
-- `PreviousState.pkl`: Contains states of historical poses, forces, and images
+Input: `InputState/PreviousState.pkl`, containing the recorded phantom images,
+forces and robot poses. The demo uses the first ten recorded observations.
 
-### Output
+Outputs are NumPy arrays with columns
+`[Fx, Fy, Fz, Mx, My, Mz, x, y, z, r1, r2, r3]`:
 
-- `Outputaction/PredAction.npy`: Force and pose estimations in harmonized space
-- `Outputaction/ExeAction.npy`: Force and pose conversions in robot space
+| File | Shape | Pose representation |
+| --- | --- | --- |
+| `Outputaction/PredAction.npy` | `(8, 12)` | Predicted positions in the harmonized frame, with XYZ Euler angles |
+| `Outputaction/ExeAction.npy` | `(5, 12)` | First five converted waypoints in robot coordinates, with rotation vectors |
+
+Forces are in N, torques in N m, positions in m, and angles in radians.
+`ExeAction.npy` contains calculated commands, not measured robot execution.
+Sampling can vary across software or hardware environments.
 
 ## Visualization
 
-The `testdemoVis.ipynb` notebook provides visualization of both input and output data.
+From the repository root, open `testdemoVis.ipynb` and run its cells in order:
 
-Input images:
-<p align="center">
-  <img src="figs/input_image.png" alt="Input images">
-</p>
+```bash
+python -m ipykernel install --sys-prefix --name python3 --display-name robodiff
+python -m notebook testdemoVis.ipynb
+```
 
-Input forces and poses in robot space:
-<p align="center">
-  <img src="figs/input_poseforce.png" alt="Input forces and poses in robot space">
-</p>
+Use the Python kernel from the activated environment. The notebook reads the
+input recording and the newly generated output arrays, and saves plots in `figs/`.
+It converts robot-space rotation vectors to Euler angles for display; the
+predicted harmonized angles are already Euler angles.
 
-Output forces and poses in harmonized space:
-<p align="center">
-  <img src="figs/output_predposeforce.png" alt="Output forces and poses in harmonized space">
-</p>
+For non-interactive execution:
 
-Output forces and poses in robot space:
-<p align="center">
-  <img src="figs/output_robotposeforce.png" alt="Output forces and poses in robot space">
-</p>
+```bash
+python -m ipykernel install --sys-prefix --name python3 --display-name robodiff
+MPLBACKEND=Agg python -m nbconvert --to notebook --execute testdemoVis.ipynb --output testdemoVis.executed.ipynb --output-dir testoutput --ExecutePreprocessor.timeout=600
+```
+
+- Input images: `figs/input_image.png`
+- Input forces and poses: `figs/input_poseforce.png`
+- Predicted forces and poses: `figs/output_predposeforce.png`
+- Converted forces and poses: `figs/output_robotposeforce.png`
+
+## Core components
+
+- Multimodal fusion: `diffusion_policy/zhutils/PosiImgFusion.py`
+- Pose harmonization and action generation: `diffusion_policy/policy/diffusion_zh.py`
+- Pose transformations: `robotcontrol.py`
+- Offline input and waypoint conversion: `communicate/envoffline.py`
+- Ultrasound image randomization: `DomainRam/DomainRam3Plus.py`
+- Reference training configuration: `configs/ExampleTrain.yaml`
+
+## Acknowledgments and license
+
+This project builds on [Diffusion Policy](https://github.com/real-stanford/diffusion_policy)
+and [Efficient-KAN](https://github.com/Blealtan/efficient-kan).
+Original software is distributed under the MIT License; see `LICENSE` and
+`THIRD_PARTY_NOTICES.md` for license scope and upstream notices.

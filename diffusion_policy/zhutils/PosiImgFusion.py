@@ -102,3 +102,37 @@ class AttnFusionKANForce(nn.Module):
         Force_posi = self.forcefc2(Force_posi)
         return output, Force_posi, top_indices[0]
     
+class AttnFusionKAN(nn.Module): 
+    def __init__(self, input_dim, output_dim, hidden_dim=64, num_heads=8):  
+        super(AttnFusionKAN, self).__init__()  
+        self.max_freq = 10  
+        self.num_freqs = 6  
+        self.hidden_dim = hidden_dim  
+        self.num_heads = num_heads  
+
+        self.posi_mapping = KANLinear(2 * 6 * self.num_freqs, input_dim)    
+        self.attention = nn.MultiheadAttention(embed_dim=input_dim, num_heads=num_heads, batch_first=True)  
+        self.fc = nn.Sequential(  
+            KANLinear(input_dim, hidden_dim),  
+            nn.ReLU(),  
+            KANLinear(hidden_dim, output_dim)  
+        )  
+
+    def forward(self, ImageFeature, PosiFeature):  
+        batch_size, seq_len, _ = ImageFeature.shape  
+
+        Posi = PosiFeature.reshape([-1,6])
+        freq_bands = 2 ** torch.linspace(0, self.max_freq, steps=self.num_freqs,device=Posi.device)  
+        PEencoding = positional_encoding(coords=Posi, freq_bands=freq_bands)
+        PEencoding = self.posi_mapping(PEencoding)
+        PEencoding = PEencoding.reshape([PosiFeature.shape[0],PosiFeature.shape[1],-1])
+        query = PEencoding  
+        key = ImageFeature  
+        value = ImageFeature 
+
+        attn_output, attn_weights = self.attention(query, key, value)  
+        fusion_output = attn_output + ImageFeature  
+
+        output = self.fc(fusion_output)  
+
+        return output  

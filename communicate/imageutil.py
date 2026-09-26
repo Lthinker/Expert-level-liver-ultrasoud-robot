@@ -75,7 +75,7 @@ def frammask3(frame):
     cropframe_mmask_barmask = cropframe_mmask * barmask
     return cropframe_mmask_barmask
 
-MRGreenBar_580_803_at790 =  np.load('MRGreenBar_580_803_at790.npy')
+MRGreenBar_580_803_at790 =  np.load('./communicate/MRGreenBar_580_803_at790.npy')
 
 def frammask4(frame):
     nx = 150
