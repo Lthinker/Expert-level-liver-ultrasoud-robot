@@ -95,10 +95,21 @@ python -m ipykernel install --sys-prefix --name python3 --display-name robodiff
 MPLBACKEND=Agg python -m nbconvert --to notebook --execute testdemoVis.ipynb --output testdemoVis.executed.ipynb --output-dir testoutput --ExecutePreprocessor.timeout=600
 ```
 
-- Input images: `figs/input_image.png`
-- Input forces and poses: `figs/input_poseforce.png`
-- Predicted forces and poses: `figs/output_predposeforce.png`
-- Converted forces and poses: `figs/output_robotposeforce.png`
+Input images:
+
+![Input ultrasound images](figs/input_image.png)
+
+Input forces and poses in robot coordinates:
+
+![Input forces and poses](figs/input_poseforce.png)
+
+Predicted forces and poses in the harmonized frame:
+
+![Predicted forces and poses](figs/output_predposeforce.png)
+
+Converted waypoints in robot coordinates (offline calculation):
+
+![Converted forces and poses](figs/output_robotposeforce.png)
 
 ## Core components
 
